@@ -17,8 +17,10 @@ echo \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
+---
 **En este último apartado si utilizas un SO diferente a ubuntu, por ejemplo debian deberás de cambiar la url de donde se descarga.
 En el caso para debian es `https://download.docker.com/linux/debian`**
+---
 ```
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
