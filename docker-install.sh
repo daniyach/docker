@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Check docker
 sudo docker ps &> /dev/null
 # Install docker
