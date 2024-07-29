@@ -10,8 +10,41 @@ Este repositorio tiene como objetivo principal guardar todos los Docker que voy 
 | [uptime-kuma](https://github.com/daniyach/docker/tree/main/uptime-kuma)  | Configuración e instalación de Uptime Kuma utilizando Docker.    |
 | ...            | ...                                                              |
 
+---
 
-## Instalación de Docker
+## Instalación de Docker con script
+
+### Descripción
+Este script instala Docker en una máquina con Ubuntu. Verifica si Docker está instalado y, si no lo está, procede a instalarlo.
+
+
+#### 1. Clona este repositorio o descarga el script directamente.
+
+```bash
+git clone https://github.com/daniyach/docker.git
+```
+    
+```bash
+cd docker
+```
+
+#### 2. Asegúrate de que el script tenga permisos de ejecución.
+
+```sh
+chmod +x install_docker.sh
+```
+
+#### 3. Ejecuta el script con privilegios de `sudo`.
+
+```sh
+sudo ./install_docker.sh
+```
+
+> Después de la instalación, cierra sesión y vuelve a iniciarla para aplicar los cambios de grupo.
+
+---
+
+## Instalación de Docker manualmente
 
 ### Paso 1: Actualizar los Repositorios y Paquetes
 
