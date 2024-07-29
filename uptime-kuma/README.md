@@ -7,14 +7,12 @@ git clone https://github.com/daniyach/docker.git
 cd docker/uptime-kuma
 cp sample.env .env
 sed -i "s/uptime.tuservidor.es/<el_fqdn_que_quieras>/g" .env
-mkdir data
+sed -i "s/tu_correo@gmail.com/<tu_correo_electronico>/g" .env
 ```
 
-A la hora de levantar el servicio dependerá del proxy inverso que hayas seleccionado. Si has elegido Caddy, simplemente,
-En mi caso solamente lo he configurado con Traefik, en caso de querer probar caddy, ir al repositorio de atareo.
-
 ```
-docker-compose -f docker-compose.yml -f docker-compose.traefik.yml up -d
-docker-compose logs -f
+docker compose up -d
+docker compose logs -f
 ```
 
+En mi caso solamente lo he configurado con nginx-proxy de jwilder directamente en el propio docker-compose.yml, en caso de querer probar caddy o traefik, ir al repositorio de atareo.
