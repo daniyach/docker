@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
-
 set -e
 set -x
 
-# Check if script is run as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root"
     exit 1
 fi
 
-# Function to check if a command exists
 function command_exists() {
     command -v "$1" &> /dev/null
 }
@@ -20,50 +17,39 @@ if command_exists docker; then
   exit 0
 fi
 
-# Check if the distribution is Ubuntu
-if ! grep -q "Ubuntu" /etc/os-release; then
-    echo "This script is only for Ubuntu."
+# Verify OS
+. /etc/os-release
+if [[ "$ID" != "ubuntu" || "$VERSION_ID" != "22.04" ]]; then
+    echo "This script is only for Ubuntu 22.04."
     exit 1
 fi
 
 echo -e "\n Installing Docker \n"
 
-# Remove any old versions of Docker
 apt-get remove -y docker docker-engine docker.io containerd runc &> /dev/null
-
-# Update the package index
 apt-get update
+apt-get install -y ca-certificates curl gnupg lsb-release
 
-# Install required packages
-apt-get install -y ca-certificates curl gnupg
-
-# Create the keyrings directory
 install -m 0755 -d /etc/apt/keyrings
-
-# Add Docker's official GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-# Set permissions for the GPG key
 chmod a+r /etc/apt/keyrings/docker.gpg
 
-# Add Docker's official APT repository
 echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Update the package index again
 apt-get update
-
-# Install Docker packages
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-echo -e "\n Check users: \n"
-echo "   - ${SUDO_USER}"
-echo "   - ${USER}"
-echo -e "\n"
+systemctl enable docker
+systemctl start docker
 
-# Add the current user to the docker group
-usermod -aG docker "$SUDO_USER"
+TARGET_USER="${SUDO_USER:-$USER}"
+echo -e "\n Adding user ${TARGET_USER} to docker group \n"
+usermod -aG docker "$TARGET_USER"
 
-echo -e "\n Docker installation completed successfully. Please log out and log back in for changes to take effect."
+echo -e "\n Docker installation completed successfully."
+echo "Please log out and log back in for group changes to take effect."
+docker --version
+docker compose version
